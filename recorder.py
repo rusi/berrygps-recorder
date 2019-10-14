@@ -62,7 +62,7 @@ def record():
         time.sleep(0.8)
         if report["class"] == "TPV":
             data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord()
-            print(data)
+            # print(data)
             f.write(data + "\n")
         if not GPIO.input(BCM_btn):
             break
