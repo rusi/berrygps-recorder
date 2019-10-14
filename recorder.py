@@ -23,7 +23,9 @@ def displayIPaddress():
     global booting
     print("booting...")
     while booting:
+        # get IP address; ref: https://circuitdigest.com/microcontroller-projects/display-ip-address-of-raspberry-pi
         ipaddr = commands.getoutput('hostname -I')
+        # ipaddr = commands.getoutput('ifconfig wlan0 | grep "inet" | cut -d" " -f10')
         led.bing(3, 0.05)
         time.sleep(1.0)
         if (len(ipaddr) > 0):
@@ -67,6 +69,8 @@ try:
         else:
             idle()
 
+except (KeyboardInterrupt, SystemExit): # when you press ctrl+c
+    print "Exiting..."
+
 finally:
     GPIO.cleanup()
-
