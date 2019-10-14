@@ -5,7 +5,7 @@ BCM_led = -1
 terminate = False
 
 def bing(n, d = 0.2):
-    for _ in xrange(n):
+    for _ in range(n):
         if terminate:
             return
         GPIO.output(BCM_led, GPIO.HIGH)
