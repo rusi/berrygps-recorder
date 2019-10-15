@@ -3,6 +3,7 @@ import time
 import subprocess
 import datetime
 import pprint
+import os
 
 import led
 import gpsdata
@@ -67,7 +68,9 @@ def record():
         if not GPIO.input(BCM_btn):
             break
 
+    f.flush()
     f.close()
+    os.sync()
     recording = False
     print("recording...done")
 

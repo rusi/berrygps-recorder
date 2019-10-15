@@ -8,7 +8,7 @@ import pprint
 gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE)
 
 def getGPSheader():
-    return 'gpstime,lat,lon,alt,eps,epx,epv,ept,speed,climb,track,status,mode,sats,used'
+    return 'gpstime,lat,lon,alt,eps,epx,epv,ept,speed (m/s),climb,track,status,mode,sats,used'
 
 def getGPSrecord():
     global gpsd
