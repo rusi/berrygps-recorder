@@ -70,6 +70,7 @@ def record():
 
     f.flush()
     f.close()
+    os.chmod(filename, 0o666)
     os.sync()
     recording = False
     print("recording...done")
