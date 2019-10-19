@@ -7,6 +7,7 @@ import os
 
 import led
 import gpsdata
+import imudata
 
 BCM_led = 18
 BCM_btn = 22
@@ -51,20 +52,18 @@ def record():
     print(filename)
     f = open(filename,'w')
 
-    f.write("datetime," + gpsdata.getGPSheader() + "\n")
+    f.write("datetime," + gpsdata.getGPSheader() + "," + imudata.getIMUmeasureGheader() + "\n")
 
+    btnled = led.FlashingLED(0.1, 0.9)
+    btnled.start()
     while True:
-        GPIO.output(BCM_led, GPIO.HIGH)
-        time.sleep(0.1)
-        GPIO.output(BCM_led, GPIO.LOW)
-        if not GPIO.input(BCM_btn):
-            break
-        time.sleep(0.8)
-        data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord()
+        time.sleep(0.5)
+        data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord() + "," + imudata.getIMUmeasureG()
         # print(data)
         f.write(data + "\n")
         if not GPIO.input(BCM_btn):
             break
+    btnled.stop()
 
     f.flush()
     f.close()
