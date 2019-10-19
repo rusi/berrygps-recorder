@@ -52,13 +52,13 @@ def record():
     print(filename)
     f = open(filename,'w')
 
-    f.write("datetime," + gpsdata.getGPSheader() + "," + imudata.getIMUmeasureGheader() + "\n")
+    f.write("datetime," + gpsdata.getGPSheader() + "," + imudata.getIMUmeasureGheader() + "," + imudata.getIMUdataHeader() + "\n")
 
     btnled = led.FlashingLED(0.1, 0.9)
     btnled.start()
     while True:
-        time.sleep(0.5)
-        data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord() + "," + imudata.getIMUmeasureG()
+        time.sleep(0.1)
+        data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord() + "," + imudata.getIMUmeasureG() + "," + imudata.getIMUdata()
         # print(data)
         f.write(data + "\n")
         if not GPIO.input(BCM_btn):
