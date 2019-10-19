@@ -53,18 +53,16 @@ def record():
 
     f.write("datetime," + gpsdata.getGPSheader() + "\n")
 
-    gpsdata.gpsd.stream(gpsdata.WATCH_ENABLE)
-    for report in gpsdata.gpsd:
+    while True:
         GPIO.output(BCM_led, GPIO.HIGH)
         time.sleep(0.1)
         GPIO.output(BCM_led, GPIO.LOW)
         if not GPIO.input(BCM_btn):
             break
         time.sleep(0.8)
-        if report["class"] == "TPV":
-            data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord()
-            # print(data)
-            f.write(data + "\n")
+        data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord()
+        # print(data)
+        f.write(data + "\n")
         if not GPIO.input(BCM_btn):
             break
 
@@ -83,7 +81,10 @@ def idle():
 
 GPIO.add_event_detect(BCM_btn, GPIO.RISING, callback=onBtnPushed)
 
+gpsp = gpsdata.GpsPoller() # create the thread
+
 try:
+    gpsp.start() # start up the GPS thread
     displayIPaddress()
     while True:
         if recording:
@@ -95,4 +96,6 @@ except (KeyboardInterrupt, SystemExit): # when you press ctrl+c
     print("Exiting...")
 
 finally:
+    gpsp.running = False
     GPIO.cleanup()
+    gpsp.join()

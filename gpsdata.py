@@ -2,10 +2,21 @@
 # ref: http://ozzmaker.com/how-to-save-gps-data-to-a-file-using-python/
 
 from gps import *
-import time
-import pprint
+import threading
 
-gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE)
+gpsd = None
+
+class GpsPoller(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        global gpsd
+        gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE)
+        self.running = True #setting the thread running to true
+
+    def run(self):
+        global gpsd
+        while self.running:
+            gpsd.next() #this will continue to loop and grab EACH set of gpsd info to clear the buffer
 
 def getGPSheader():
     return 'gpstime,lat,lon,alt,eps,epx,epv,ept,speed (m/s),climb,track,status,mode,sats,used'
@@ -48,21 +59,27 @@ def getGPSrecord():
     # return ",,,,,,,,,,,"
 
 if __name__ == '__main__':
+    import time
+    import pprint
+    import datetime
 
     print(getGPSheader())
     #f = open(time.strftime("%Y%m%d-%H%M%S")+'-data.csv','w')
     #f.write(gpsdata.getGPSheader() + "\n")
     #f.write(gpsdata.getGPSrecord() + "\n")
 
-    gpsd.stream(WATCH_ENABLE)
+    # gpsd.stream(WATCH_ENABLE)
+    gpsp = GpsPoller() # create the thread
     try:
-        for report in gpsd:
-            if report["class"] == "TPV":
-            # pprint.pprint(report)
-            # while True:
-                data = getGPSrecord()
-                print(data)
-            # time.sleep(0.1)
+        gpsp.start() # start up the GPS thread
+        while True:
+            time.sleep(1)
+            data = getGPSrecord()
+            data = str(datetime.datetime.now()) + "," + data
+            print(data)
     except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
         print("Done.\nExiting.")
         # f.close()
+    finally:
+        gpsp.running = False
+        gpsp.join()
