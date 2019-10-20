@@ -7,6 +7,7 @@ import os
 
 import led
 import gpsdata
+import gpstime
 import imudata
 
 BCM_led = 18
@@ -56,6 +57,8 @@ def record():
 
     btnled = led.FlashingLED(0.1, 0.9)
     btnled.start()
+
+    imudata.resetIMUdata()
     while True:
         time.sleep(0.1)
         data = str(datetime.datetime.now()) + "," + gpsdata.getGPSrecord() + "," + imudata.getIMUmeasureG() + "," + imudata.getIMUdata()
@@ -83,8 +86,15 @@ GPIO.add_event_detect(BCM_btn, GPIO.RISING, callback=onBtnPushed)
 gpsp = gpsdata.GpsPoller() # create the thread
 
 try:
+    btnled = led.FlashingLED(0.5, 0.5)
+    btnled.start()
     gpsp.start() # start up the GPS thread
+    time.sleep(2)
+    gpstime.setGPSTime()
+    btnled.stop()
+
     displayIPaddress()
+
     while True:
         if recording:
             record()

@@ -21,6 +21,13 @@ class GpsPoller(threading.Thread):
 def getGPSheader():
     return 'gpstime,lat,lon,alt,eps,epx,epv,ept,speed (m/s),climb,track,status,mode,sats,used'
 
+def getGPSDateTime():
+    global gpsd
+    return gpsd.utc
+
+def isGPSFix():
+    return gpsd.fix.mode > 1 # MODE_NO_FIX
+
 def getGPSrecord():
     global gpsd
     # report = gpsd.next()

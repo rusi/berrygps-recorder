@@ -119,6 +119,7 @@ CFangleX = 0.0
 CFangleY = 0.0
 kalmanX = 0.0
 kalmanY = 0.0
+a = datetime.datetime.now()
 
 def getIMUmeasureGheader():
     return "Gx,Gy,Gz"
@@ -137,7 +138,25 @@ def getIMUmeasureG():
 def getIMUdataHeader():
     return "ACCx,ACCy,ACCz,GYRx,GYRy,GYRz,MAGx,MAGy,MAGz,AccXangle,AccYangle,gyroXangle,gyroYangle,gyroZangle,CFangleX,CFangleY,heading,tiltCompensatedHeading,kalmanX,kalmanY"
 
-a = datetime.datetime.now()
+def resetIMUdata():
+    global a
+    global gyroXangle
+    global gyroYangle
+    global gyroZangle
+    global CFangleX
+    global CFangleY
+    global kalmanX
+    global kalmanY
+    gyroXangle = 0.0
+    gyroYangle = 0.0
+    gyroZangle = 0.0
+    CFangleX = 0.0
+    CFangleY = 0.0
+    kalmanX = 0.0
+    kalmanY = 0.0
+    a = datetime.datetime.now()
+
+
 def getIMUdata():
     global a
     global gyroXangle
